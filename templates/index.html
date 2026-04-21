@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agnayi | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <nav class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="hover:opacity-80 transition">
+                <h1 class="text-2xl font-bold tracking-tight">AGNAYI</h1>
+            </a>
+            <div class="flex items-center space-x-4">
+                <span class="bg-green-500 w-3 h-3 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+                <p class="text-sm font-medium">System Online</p>
+                <a href="/dashboard/admin" class="ml-4 bg-slate-800 text-white text-xs px-3 py-1.5 rounded hover:bg-slate-700 font-bold tracking-wide transition">
+    <i class="fas fa-database mr-1"></i> Admin Panel
+</a>
+                <img src="https://ui-avatars.com/api/?name={{ developer }}&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full border-2 border-white shadow-sm">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-8 px-4 max-w-7xl">
+        <div class="bg-white rounded-2xl shadow-sm p-8 mb-8 border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-3xl font-extrabold text-slate-800">Welcome back, {{ developer }}!</h2>
+                <p class="text-slate-500 mt-2 text-lg">Your Real Estate CRM is running smoothly. All database tables are synchronized.</p>
+                <div class="mt-6 flex space-x-4">
+                    <a href="https://github.com/{{ github_profile }}" target="_blank" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl hover:bg-black transition flex items-center font-semibold shadow-md">
+                        <i class="fab fa-github mr-2 text-lg"></i> GitHub Profile
+                    </a>
+                    </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <a href="/dashboard/leads" class="block bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-600 transition transform hover:-translate-y-1 hover:shadow-md cursor-pointer group">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Active Leads</p>
+                        <h3 class="text-3xl font-black text-slate-800 mt-1">{{ stats.leads if stats else 0 }}</h3>
+                    </div>
+                    <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition">
+                        <i class="fas fa-users text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-blue-600 mt-4 block font-bold uppercase tracking-wide group-hover:underline">View Pipeline →</p>
+            </a>
+
+            <a href="/dashboard/properties" class="block bg-white p-6 rounded-2xl shadow-sm border-l-4 border-purple-600 transition transform hover:-translate-y-1 hover:shadow-md cursor-pointer group">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Properties</p>
+                        <h3 class="text-3xl font-black text-slate-800 mt-1">{{ stats.properties if stats else 0 }}</h3>
+                    </div>
+                    <div class="bg-purple-50 w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-purple-100 transition">
+                        <i class="fas fa-building text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-purple-600 mt-4 block font-bold uppercase tracking-wide group-hover:underline">Manage Inventory →</p>
+            </a>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-orange-500 transition transform hover:-translate-y-1 hover:shadow-md">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">n8n Automation</p>
+                        <h3 class="text-xl font-black text-slate-800 mt-2">Active</h3>
+                    </div>
+                    <div class="bg-orange-50 w-12 h-12 rounded-full flex items-center justify-center">
+                        <i class="fas fa-bolt text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-orange-600 mt-4 font-bold uppercase tracking-wide flex items-center">
+                    <i class="fas fa-check-circle mr-1"></i> SMTP Connected
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-chart-line text-blue-500 mr-3"></i> System Metrics Overview
+                </h3>
+                <span class="text-xs font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">Live Data</span>
+            </div>
+            
+            <div class="relative w-full" style="height: 300px;">
+                <canvas id="crmChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('crmChart').getContext('2d');
+            const liveStats = JSON.parse('{{ stats | tojson | safe }}' || '{}');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Active Leads', 'Property Inventory', 'Registered Agents', 'Converted Clients'],
+                    datasets: [{
+                        label: 'Database Records',
+                        data: [
+                            liveStats.leads || 0, 
+                            liveStats.properties || 0, 
+                            liveStats.agents || 0, 
+                            liveStats.clients || 0
+                        ],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)', 'rgba(147, 51, 234, 0.8)', 
+                            'rgba(249, 115, 22, 0.8)', 'rgba(16, 185, 129, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(37, 99, 235, 1)', 'rgba(126, 34, 206, 1)',
+                            'rgba(234, 88, 12, 1)', 'rgba(5, 150, 105, 1)'
+                        ],
+                        borderWidth: 1, borderRadius: 6, barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', padding: 12, titleFont: { size: 14 }, bodyFont: { size: 14, weight: 'bold' } } },
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(241, 245, 249, 1)' }, ticks: { precision: 0, font: { family: "'Inter', sans-serif", size: 12 } } }, x: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", size: 12, weight: '500' } } } }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

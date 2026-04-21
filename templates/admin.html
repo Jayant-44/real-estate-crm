@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agnayi | Master Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-900 flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 text-white flex flex-col h-full shadow-2xl z-20">
+        <div class="p-6 border-b border-slate-800">
+            <a href="/" class="hover:opacity-80 transition">
+                <h1 class="text-2xl font-bold tracking-tight">AGNAYI</h1>
+            </a>
+            <p class="text-xs text-slate-400 font-bold tracking-widest mt-1 uppercase">Database Admin</p>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('properties-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg bg-blue-600 text-white font-semibold transition" id="btn-properties-tab">
+                <i class="fas fa-building w-6"></i> Properties
+            </button>
+            <button onclick="switchTab('leads-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-leads-tab">
+                <i class="fas fa-users w-6"></i> Leads
+            </button>
+            <button onclick="switchTab('agents-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-agents-tab">
+                <i class="fas fa-id-badge w-6"></i> Agents
+            </button>
+            <button onclick="switchTab('clients-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-clients-tab">
+                <i class="fas fa-handshake w-6"></i> Clients
+            </button>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800">
+            <a href="/" class="flex items-center text-sm text-slate-400 hover:text-white transition">
+                <i class="fas fa-arrow-left mr-2"></i> Exit Admin
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-8 bg-slate-50 relative">
+        
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-800" id="page-title">Manage Properties</h2>
+                <p class="text-slate-500 mt-1">Directly manage, edit, and remove database records.</p>
+            </div>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold border border-blue-200">
+                <i class="fas fa-shield-alt mr-1"></i> Full CRUD Access
+            </span>
+        </div>
+
+        <div id="properties-tab" class="tab-content block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-100 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Title</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Price (INR)</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for prop in properties %}
+                    <tr id="prop-{{ prop.id }}" class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ prop.id }}</td>
+                        <td class="px-6 py-4 text-sm font-bold" id="title-{{ prop.id }}">{{ prop.title }}</td>
+                        <td class="px-6 py-4 text-sm font-semibold" id="price-{{ prop.id }}">₹{{ prop.price }}</td>
+                        <td class="px-6 py-4 text-right space-x-2">
+                            <button onclick="openEditModal('{{ prop.id }}', '{{ prop.title }}', '{{ prop.location }}', '{{ prop.price }}')" class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition" title="Edit Record">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteRecord('properties', '{{ prop.id }}', 'prop-{{ prop.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="Delete Record">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="leads-tab" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-100 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Budget (INR)</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for lead in leads %}
+                    <tr id="lead-{{ lead.id }}" class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ lead.id }}</td>
+                        <td class="px-6 py-4 text-sm font-bold">{{ lead.name }}</td>
+                        <td class="px-6 py-4 text-sm">₹{{ lead.budget }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="deleteRecord('leads', '{{ lead.id }}', 'lead-{{ lead.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="agents-tab" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-100 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Email</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for agent in agents %}
+                    <tr id="agent-{{ agent.id }}" class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ agent.id }}</td>
+                        <td class="px-6 py-4 text-sm font-bold">{{ agent.name }}</td>
+                        <td class="px-6 py-4 text-sm">{{ agent.email }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="deleteRecord('agents', '{{ agent.id }}', 'agent-{{ agent.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="clients-tab" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-100 border-b border-slate-200">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Type</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for client in clients %}
+                    <tr id="client-{{ client.id }}" class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ client.id }}</td>
+                        <td class="px-6 py-4 text-sm font-bold">{{ client.name }}</td>
+                        <td class="px-6 py-4 text-sm">{{ client.client_type }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="deleteRecord('clients', '{{ client.id }}', 'client-{{ client.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="editModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[100]">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all">
+                <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">Edit Property</h3>
+                <input type="hidden" id="edit-id">
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Title</label>
+                        <input type="text" id="edit-title" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Location</label>
+                        <input type="text" id="edit-location" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Price (INR)</label>
+                        <input type="number" id="edit-price" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end space-x-3">
+                    <button onclick="closeEditModal()" class="px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 font-semibold transition">Cancel</button>
+                    <button onclick="saveChanges()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('block');
+                tab.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition";
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.className = "tab-btn w-full flex items-center p-3 rounded-lg bg-blue-600 text-white font-semibold transition";
+
+            const titles = {
+                'properties-tab': 'Manage Properties',
+                'leads-tab': 'Manage Leads',
+                'agents-tab': 'Manage Agents',
+                'clients-tab': 'Manage Clients'
+            };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        // --- UNIVERSAL DELETE LOGIC ---
+        function deleteRecord(tableName, recordId, rowElementId) {
+            if(confirm(`Are you sure you want to permanently delete this record?`)) {
+                fetch(`/api/${tableName}/${recordId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        const row = document.getElementById(rowElementId);
+                        row.style.backgroundColor = '#fee2e2';
+                        setTimeout(() => { row.remove(); }, 300);
+                    } else {
+                        alert("Error: " + data.error);
+                    }
+                }).catch(error => console.error('Error:', error));
+            }
+        }
+
+        // --- PROPERTY EDIT MODAL LOGIC ---
+        function openEditModal(id, title, location, price) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-title').value = title;
+            document.getElementById('edit-location').value = location;
+            document.getElementById('edit-price').value = price;
+            
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        function saveChanges() {
+            const id = document.getElementById('edit-id').value;
+            const newTitle = document.getElementById('edit-title').value;
+            const newLocation = document.getElementById('edit-location').value;
+            const newPrice = document.getElementById('edit-price').value;
+
+            fetch(`/api/properties/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: newTitle,
+                    location: newLocation,
+                    price: newPrice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById(`title-${id}`).innerText = newTitle;
+                    document.getElementById(`price-${id}`).innerText = "₹" + newPrice;
+                    
+                    const row = document.getElementById(`prop-${id}`);
+                    row.style.backgroundColor = '#dcfce3';
+                    setTimeout(() => { row.style.backgroundColor = ''; }, 1000);
+                    
+                    closeEditModal();
+                } else {
+                    alert("Error updating record: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Server error occurred.");
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agnayi | Lead Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <nav class="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <i class="fas fa-home"></i>
+                </div>
+                <a href="/" class="hover:opacity-80 transition">
+                    <h1 class="text-xl font-bold tracking-tight text-slate-800">AGNAYI</h1>
+                </a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Dashboard</a>
+                <a href="/dashboard/add-lead" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition transform active:scale-95">
+                    <i class="fas fa-plus mr-2"></i>New Lead
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Lead Pipeline</h2>
+                <p class="text-slate-500 mt-1">Manage and track all property inquiries captured via API and Forms.</p>
+            </div>
+            <div class="flex space-x-3">
+                <div class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm text-center">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Total Leads</p>
+                    <p class="text-xl font-black text-blue-600">{{ leads|length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden glass-card">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50/50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Client Details</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Financials</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Requirements</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Automation</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for lead in leads %}
+                        <tr class="hover:bg-blue-50/50 transition-colors">
+                            <td class="px-6 py-5">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 mr-3 border border-slate-200">
+                                        <i class="fas fa-user text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-bold text-slate-800">{{ lead.name }}</div>
+                                        <div class="text-xs text-slate-400">{{ lead.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5">
+                                <div class="text-sm font-bold text-slate-700">₹{{ lead.budget }}</div>
+                                <div class="text-[10px] text-green-600 font-bold uppercase tracking-wide">Verified Budget</div>
+                            </td>
+                            <td class="px-6 py-5">
+                                <div class="text-xs text-slate-600 max-w-[200px] line-clamp-2">
+                                    {{ lead.preferences if lead.preferences else "No specific requirements logged." }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-5">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span>
+                                    {{ lead.status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-5 text-right">
+                                <button class="text-slate-400 hover:text-blue-600 transition">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if leads|length == 0 %}
+            <div class="text-center py-20">
+                <div class="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-inbox text-slate-300 text-2xl"></i>
+                </div>
+                <h3 class="text-slate-800 font-bold">No leads captured yet</h3>
+                <p class="text-slate-400 text-sm mt-1">Start by adding a lead manually or via the API.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <p class="mt-8 text-center text-slate-400 text-xs">
+            Agnayi CRM System v1.0 • Built by {{ developer if developer else "Jayant" }} • <i class="fas fa-database mr-1"></i> MySQL Connected
+        </p>
+    </main>
+
+</body>
+</html>
