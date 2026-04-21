@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Agnayi | Master Database</title>
+    <title>Agnayi CRM | Master Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -13,20 +13,20 @@
             <a href="/" class="hover:opacity-80 transition">
                 <h1 class="text-2xl font-bold tracking-tight">AGNAYI</h1>
             </a>
-            <p class="text-xs text-slate-400 font-bold tracking-widest mt-1 uppercase">Database Admin</p>
+            <p class="text-[10px] text-slate-400 font-bold tracking-widest mt-1 uppercase">Database Admin</p>
         </div>
         
         <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('properties-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg bg-blue-600 text-white font-semibold transition" id="btn-properties-tab">
+            <button onclick="switchTab('properties')" class="tab-btn w-full flex items-center p-3 rounded-lg bg-blue-600 text-white font-semibold transition" id="btn-properties">
                 <i class="fas fa-building w-6"></i> Properties
             </button>
-            <button onclick="switchTab('leads-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-leads-tab">
+            <button onclick="switchTab('leads')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-leads">
                 <i class="fas fa-users w-6"></i> Leads
             </button>
-            <button onclick="switchTab('agents-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-agents-tab">
+            <button onclick="switchTab('agents')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-agents">
                 <i class="fas fa-id-badge w-6"></i> Agents
             </button>
-            <button onclick="switchTab('clients-tab')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-clients-tab">
+            <button onclick="switchTab('clients')" class="tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition" id="btn-clients">
                 <i class="fas fa-handshake w-6"></i> Clients
             </button>
         </nav>
@@ -38,244 +38,214 @@
         </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto p-8 bg-slate-50 relative">
-        
-        <div class="flex justify-between items-end mb-8">
+    <main class="flex-1 overflow-y-auto p-8 relative">
+        <div class="flex justify-between items-center mb-8">
             <div>
                 <h2 class="text-3xl font-extrabold text-slate-800" id="page-title">Manage Properties</h2>
                 <p class="text-slate-500 mt-1">Directly manage, edit, and remove database records.</p>
             </div>
-            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold border border-blue-200">
-                <i class="fas fa-shield-alt mr-1"></i> Full CRUD Access
-            </span>
+            
+            <button onclick="openModal('add')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition transform active:scale-95 flex items-center">
+                <i class="fas fa-plus mr-2"></i> Add New Record
+            </button>
         </div>
 
-        <div id="properties-tab" class="tab-content block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-100 border-b border-slate-200">
-                    <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Title</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Price (INR)</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    {% for prop in properties %}
-                    <tr id="prop-{{ prop.id }}" class="hover:bg-slate-50 transition">
-                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ prop.id }}</td>
-                        <td class="px-6 py-4 text-sm font-bold" id="title-{{ prop.id }}">{{ prop.title }}</td>
-                        <td class="px-6 py-4 text-sm font-semibold" id="price-{{ prop.id }}">₹{{ prop.price }}</td>
-                        <td class="px-6 py-4 text-right space-x-2">
-                            <button onclick="openEditModal('{{ prop.id }}', '{{ prop.title }}', '{{ prop.location }}', '{{ prop.price }}')" class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition" title="Edit Record">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="deleteRecord('properties', '{{ prop.id }}', 'prop-{{ prop.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="Delete Record">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div id="leads-tab" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-100 border-b border-slate-200">
-                    <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Budget (INR)</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    {% for lead in leads %}
-                    <tr id="lead-{{ lead.id }}" class="hover:bg-slate-50 transition">
-                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ lead.id }}</td>
-                        <td class="px-6 py-4 text-sm font-bold">{{ lead.name }}</td>
-                        <td class="px-6 py-4 text-sm">₹{{ lead.budget }}</td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="deleteRecord('leads', '{{ lead.id }}', 'lead-{{ lead.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div id="agents-tab" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-100 border-b border-slate-200">
-                    <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Email</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    {% for agent in agents %}
-                    <tr id="agent-{{ agent.id }}" class="hover:bg-slate-50 transition">
-                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ agent.id }}</td>
-                        <td class="px-6 py-4 text-sm font-bold">{{ agent.name }}</td>
-                        <td class="px-6 py-4 text-sm">{{ agent.email }}</td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="deleteRecord('agents', '{{ agent.id }}', 'agent-{{ agent.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div id="clients-tab" class="tab-content hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-100 border-b border-slate-200">
-                    <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Type</th>
-                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    {% for client in clients %}
-                    <tr id="client-{{ client.id }}" class="hover:bg-slate-50 transition">
-                        <td class="px-6 py-4 text-sm text-slate-400 font-bold">#{{ client.id }}</td>
-                        <td class="px-6 py-4 text-sm font-bold">{{ client.name }}</td>
-                        <td class="px-6 py-4 text-sm">{{ client.client_type }}</td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="deleteRecord('clients', '{{ client.id }}', 'client-{{ client.id }}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div id="editModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[100]">
-            <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all">
-                <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">Edit Property</h3>
-                <input type="hidden" id="edit-id">
-                
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">Title</label>
-                        <input type="text" id="edit-title" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">Location</label>
-                        <input type="text" id="edit-location" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">Price (INR)</label>
-                        <input type="number" id="edit-price" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
-                </div>
-
-                <div class="mt-8 flex justify-end space-x-3">
-                    <button onclick="closeEditModal()" class="px-4 py-2 rounded-lg text-slate-500 hover:bg-slate-100 font-semibold transition">Cancel</button>
-                    <button onclick="saveChanges()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition">Save Changes</button>
-                </div>
+        <div id="table-container" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             </div>
-        </div>
-
     </main>
 
+    <div id="masterModal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-2" id="modal-title">Edit Record</h3>
+            
+            <form id="masterForm" onsubmit="handleFormSubmit(event)" enctype="multipart/form-data" class="space-y-4">
+                <input type="hidden" id="form-id">
+                
+                <div id="form-fields" class="space-y-4"></div>
+
+                <div class="mt-8 flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl text-slate-500 hover:bg-slate-100 font-semibold transition">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md transition">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // --- TAB SWITCHING LOGIC ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('block');
-                tab.classList.add('hidden');
-            });
+        // Track the currently active tab
+        let currentTab = 'properties';
+        
+        // Load data from Flask safely
+        const rawData = {
+            properties: JSON.parse('{{ properties | tojson | safe }}' || '[]'),
+            leads: JSON.parse('{{ leads | tojson | safe }}' || '[]'),
+            agents: JSON.parse('{{ agents | tojson | safe }}' || '[]'),
+            clients: JSON.parse('{{ clients | tojson | safe }}' || '[]')
+        };
+
+        // --- TAB & UI LOGIC ---
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update sidebar buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.className = "tab-btn w-full flex items-center p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-semibold transition";
             });
+            const activeBtn = document.getElementById('btn-' + tab);
+            activeBtn.className = "tab-btn w-full flex items-center p-3 rounded-lg bg-blue-600 text-white font-semibold transition shadow-md";
 
-            document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById(tabId).classList.add('block');
-            
-            const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.className = "tab-btn w-full flex items-center p-3 rounded-lg bg-blue-600 text-white font-semibold transition";
-
+            // Update Page Title
             const titles = {
-                'properties-tab': 'Manage Properties',
-                'leads-tab': 'Manage Leads',
-                'agents-tab': 'Manage Agents',
-                'clients-tab': 'Manage Clients'
+                'properties': 'Manage Properties',
+                'leads': 'Manage Leads',
+                'agents': 'Manage Agents',
+                'clients': 'Manage Clients'
             };
-            document.getElementById('page-title').innerText = titles[tabId];
+            document.getElementById('page-title').innerText = titles[tab];
+            
+            renderTable();
         }
 
-        // --- UNIVERSAL DELETE LOGIC ---
-        function deleteRecord(tableName, recordId, rowElementId) {
-            if(confirm(`Are you sure you want to permanently delete this record?`)) {
-                fetch(`/api/${tableName}/${recordId}`, { method: 'DELETE' })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        const row = document.getElementById(rowElementId);
-                        row.style.backgroundColor = '#fee2e2';
-                        setTimeout(() => { row.remove(); }, 300);
-                    } else {
-                        alert("Error: " + data.error);
-                    }
-                }).catch(error => console.error('Error:', error));
+        // --- TABLE RENDERING LOGIC ---
+        function renderTable() {
+            const data = rawData[currentTab];
+            let html = `<table class="w-full text-left"><thead class="bg-slate-50 border-b border-slate-200"><tr><th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">ID</th>`;
+            
+            // Setup Headers based on Tab
+            if (currentTab === 'properties') {
+                html += `<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Title</th><th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Price</th>`;
+            } else if (currentTab === 'leads') {
+                html += `<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Name</th><th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Budget</th>`;
+            } else if (currentTab === 'agents') {
+                html += `<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Name</th><th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Email</th>`;
+            } else if (currentTab === 'clients') {
+                html += `<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Name</th><th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Client Type</th>`;
+            }
+
+            html += `<th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th></tr></thead><tbody class="divide-y divide-slate-100">`;
+            
+            // Generate Rows
+            data.forEach(item => {
+                let col2 = item.title || item.name;
+                let col3 = '';
+                
+                if (currentTab === 'properties') col3 = "₹" + (item.price || 0);
+                else if (currentTab === 'leads') col3 = "₹" + (item.budget || 0);
+                else if (currentTab === 'agents') col3 = item.email || '';
+                else if (currentTab === 'clients') col3 = item.client_type || '';
+
+                html += `<tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4 font-bold text-slate-400">#${item.id}</td>
+                    <td class="px-6 py-4 font-bold text-slate-800">${col2}</td>
+                    <td class="px-6 py-4 text-slate-600">${col3}</td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="openModal('edit', ${item.id})" class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteRecord(${item.id})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            
+            if (data.length === 0) {
+                html += `<div class="text-center py-12 text-slate-500"><div class="text-4xl mb-3"><i class="fas fa-folder-open text-slate-200"></i></div>No records found in this table.</div>`;
+            }
+            
+            document.getElementById('table-container').innerHTML = html;
+        }
+
+        // --- MODAL GENERATION LOGIC ---
+        function openModal(mode, id = null) {
+            const formFields = document.getElementById('form-fields');
+            const item = id ? rawData[currentTab].find(i => i.id === id) : {};
+            
+            document.getElementById('form-id').value = id || '';
+            
+            // Format Modal Title (e.g. "Add Property", "Edit Lead")
+            const singularTabName = currentTab.slice(0, -1);
+            document.getElementById('modal-title').innerText = mode === 'add' ? `Add New ${singularTabName}` : `Edit ${singularTabName}`;
+            
+            let fields = '';
+            
+            if (currentTab === 'properties') {
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Property Title *</label><input type="text" name="title" value="${item.title || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Location *</label><input type="text" name="location" value="${item.location || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div class="flex gap-4"><div class="w-1/2"><label class="block text-sm font-bold text-slate-700 mb-1">Price (INR) *</label><input type="number" name="price" value="${item.price || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div class="w-1/2"><label class="block text-sm font-bold text-slate-700 mb-1">Size (Sq.Ft)</label><input type="number" name="size_sqft" value="${item.size_sqft || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></div></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Amenities</label><textarea name="amenities" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">${item.amenities || ''}</textarea></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Upload Photo</label><input type="file" name="image" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept="image/*"></div>`;
+            } 
+            else if (currentTab === 'leads') {
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Client Name *</label><input type="text" name="name" value="${item.name || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div class="flex gap-4"><div class="w-1/2"><label class="block text-sm font-bold text-slate-700 mb-1">Email *</label><input type="email" name="email" value="${item.email || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div class="w-1/2"><label class="block text-sm font-bold text-slate-700 mb-1">Phone</label><input type="text" name="phone" value="${item.phone || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></div></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Budget (INR)</label><input type="number" name="budget" value="${item.budget || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Preferences</label><textarea name="preferences" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">${item.preferences || ''}</textarea></div>`;
+            } 
+            else if (currentTab === 'agents') {
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Agent Name *</label><input type="text" name="name" value="${item.name || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Email Address *</label><input type="email" name="email" value="${item.email || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">System Role</label><input type="text" name="role" value="${item.role || 'Agent'}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Admin, Agent"></div>`;
+            } 
+            else if (currentTab === 'clients') {
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Client Name *</label><input type="text" name="name" value="${item.name || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" required></div>`;
+                fields += `<div class="flex gap-4"><div class="w-1/2"><label class="block text-sm font-bold text-slate-700 mb-1">Email</label><input type="email" name="email" value="${item.email || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></div>`;
+                fields += `<div class="w-1/2"><label class="block text-sm font-bold text-slate-700 mb-1">Phone</label><input type="text" name="phone" value="${item.phone || ''}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></div></div>`;
+                fields += `<div><label class="block text-sm font-bold text-slate-700 mb-1">Client Type</label><input type="text" name="client_type" value="${item.client_type || 'Buyer'}" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Buyer, Seller"></div>`;
+            }
+            
+            formFields.innerHTML = fields;
+            document.getElementById('masterModal').classList.remove('hidden');
+        }
+
+        function closeModal() { 
+            document.getElementById('masterModal').classList.add('hidden'); 
+        }
+
+        // --- SUBMIT & DELETE LOGIC ---
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('form-id').value;
+            
+            // If ID exists, it's an Edit (PUT). If not, it's an Add (POST)
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/${currentTab}/${id}` : `/api/${currentTab}`;
+            
+            // FormData captures text AND files effortlessly
+            const formData = new FormData(e.target);
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    window.location.reload(); // Refresh to see database changes
+                } else {
+                    alert("Error saving data. Please check required fields.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Server connection error.");
             }
         }
 
-        // --- PROPERTY EDIT MODAL LOGIC ---
-        function openEditModal(id, title, location, price) {
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-title').value = title;
-            document.getElementById('edit-location').value = location;
-            document.getElementById('edit-price').value = price;
-            
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-        }
-
-        function saveChanges() {
-            const id = document.getElementById('edit-id').value;
-            const newTitle = document.getElementById('edit-title').value;
-            const newLocation = document.getElementById('edit-location').value;
-            const newPrice = document.getElementById('edit-price').value;
-
-            fetch(`/api/properties/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: newTitle,
-                    location: newLocation,
-                    price: newPrice
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    document.getElementById(`title-${id}`).innerText = newTitle;
-                    document.getElementById(`price-${id}`).innerText = "₹" + newPrice;
-                    
-                    const row = document.getElementById(`prop-${id}`);
-                    row.style.backgroundColor = '#dcfce3';
-                    setTimeout(() => { row.style.backgroundColor = ''; }, 1000);
-                    
-                    closeEditModal();
-                } else {
-                    alert("Error updating record: " + data.error);
+        async function deleteRecord(id) {
+            if (confirm('Are you sure you want to permanently delete this record?')) {
+                try {
+                    const res = await fetch(`/api/${currentTab}/${id}`, { method: 'DELETE' });
+                    if (res.ok) window.location.reload();
+                } catch (err) {
+                    alert("Failed to delete record.");
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Server error occurred.");
-            });
+            }
         }
+
+        // Initialize first tab
+        switchTab('properties');
     </script>
 </body>
 </html>
